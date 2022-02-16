@@ -60,3 +60,39 @@
  
  end
 ```
+# Infrastructure as Code (IaC)
+Ansible and Terraform are used to work with infrastructure as code. They can be used for configuration management and orchestration. Ansible is used for push to config, it's an automation script, terraform is used for orchestration. Ansible YAML/YML file.yml/ yaml (yet another mark up language).
+In order to set up the virtual machines, create a new directory on your computer and clone from the link sent (insert link here). Once it has been cloned, go into the correct directory and `vagrant up`, this will trigger the provisions file which will set up the machines. SSH into the machines `vagrant ssh machine_name` and check whether they have internet access using the update and upgrade commands.
+
+Ansible is Agentless?
+It's simple, you can install everything you need, no heavy dependencies. It's like operating the DLR, you only need to programm directions and behavior for the train, when it's in service it doesn't need someone there to manage it. So Ansible allows us to manage multiple VM/instances without going into them using SSH.
+
+
+# Ansible setup
+Setting up the VMs:
+- create a local directory and clone the github into it( Shahrukh eng99_IaC_ansible)
+- Once it has been cloned go to the correct directory on visual studio and type `vagrant up`. This will trigger the vagrant file and it will set up the VMs
+- When that has finished type `vagrant status` to see if they are all running
+- SSH into each VM and do the update and upgrade commands to see if there is internet access. The 3 VMs are controller,db, and web.
+
+Setting up Ansible controller make sure you are in the controller VM:
+- install required dependencies i.e python `sudo apt-get install software-properties-common`
+- install ansible repository `sudo apt-add-repository ppa:ansible/ansible`
+- `sudo apt-get install ansible` to install ansible. check version using `ansible --version`
+-  default folder structures /etc/ansible `cd /etc/ansible` to get into the right directory
+-  Install tree `sudo apt install tree`, this allows us to get a better view of files when you type `tree`
+- host file - agent node called web ip of the web (sudo nano /etc/ansible/hosts)
+- IP of web is `192.168.33.10`, IP of db is `192.168.33.11`
+- In order to enter a machine go to /etc/ansible , `ssh vagrant@IP` for example `ssh vagrant@192.168.33.10` to ssh into web. When you ssh in, you need to put a password in, which is vagrant.
+- use ping 
+- ansible web -m ping
+- need to go into the host file, (continuee)
+
+### Ansible Adhoc commands
+ansible db -m ping - pings the VM
+ansible all -m ping -pings all the available VMs
+ansible web -a "uname -a" -returns the information about the instance (The -a is used to run specific commands for a system)
+ansible all -a "uname -a" -returns the information about all the instance 
+ansible all -a "free" returns information about memory
+
+  
