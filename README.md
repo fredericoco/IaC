@@ -84,15 +84,21 @@ Setting up Ansible controller make sure you are in the controller VM:
 - host file - agent node called web ip of the web (sudo nano /etc/ansible/hosts)
 - IP of web is `192.168.33.10`, IP of db is `192.168.33.11`
 - In order to enter a machine go to /etc/ansible , `ssh vagrant@IP` for example `ssh vagrant@192.168.33.10` to ssh into web. When you ssh in, you need to put a password in, which is vagrant.
-- use ping 
-- ansible web -m ping
-- need to go into the host file, (continuee)
+- use ping to see if it is connected to the other VMs `ping IP`
+- `ansible web -m ping` to ping a certain machine, first time this won't work so we need to edit the host file
+- In the host file put the command `[web]` and under it put the line `192.168.33.10` This is the IP address of web. This time it will connect to it but it will not be able to connect, unreachable.
+- So now go back into the hosts file and add to the IP line `ansible_connection=ssh ansible_ssh_user=vagrant ansible_ssh_pass=vagrant`. Now the ping should be able to work. It will return Pong.
+- Now do the same steps for db. However, when you write on host file leave `ansible_ssh_pass=vagrant` out and run ping. Press yes on the command and when it fails go back into the host file and put the pass back into the file. Both pings should work now.
+- Create a read me and copy it over using the copy command bellow.
+- use `ansible all -a ls` to see all the directories
 
 ### Ansible Adhoc commands
-ansible db -m ping - pings the VM
-ansible all -m ping -pings all the available VMs
-ansible web -a "uname -a" -returns the information about the instance (The -a is used to run specific commands for a system)
-ansible all -a "uname -a" -returns the information about all the instance 
-ansible all -a "free" returns information about memory
+- `ansible db -m ping` - pings the db VM
+- `ansible all -m ping` -pings all the available VMs
+- `ansible web -a "uname -a"` -returns the information about the instance (The -a is used to run specific commands for a system)
+- `ansible all -a "uname -a"` -returns the information about all the instance 
+- `ansible all -a "free"` - returns information about memory
+- `ansible web -m copy -a "src=/etc/ansible/README.md dest=/home/vagrant/README.md"` will copy a file from controller to web, the src is the source directory and dest is the destination directory
+- `ansible all -a ls` will show all the directories in VMs.
 
   
