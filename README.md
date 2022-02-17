@@ -99,6 +99,16 @@ Setting up Ansible controller make sure you are in the controller VM:
 - `ansible all -a "uname -a"` -returns the information about all the instance 
 - `ansible all -a "free"` - returns information about memory
 - `ansible web -m copy -a "src=/etc/ansible/README.md dest=/home/vagrant/README.md"` will copy a file from controller to web, the src is the source directory and dest is the destination directory
-- `ansible all -a ls` will show all the directories in VMs.
+- `ansible all -a ls` will show all the files in directories in VMs.
+- `ansible-playbook filename.yml` to run a playbook
+- `ansible web -a "systemctl status nginx"` will check the status of nginx in web
 
-  
+## Ansible playbooks
+What are playbooks?
+- YAML/yml files with scripts to implement config management, they save time and they are reuseable
+- Creating a playbook: filename.yml/yaml
+- yml/yaml files starts with three dashes ---
+- Indentation is extremely important, check video for indentation
+- When playbook file is complete. Run them using `ansible-playbook filename.yml`
+- import package name (pytest) Ansible uses python in the background
+- import file.yml
