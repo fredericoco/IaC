@@ -112,3 +112,43 @@ What are playbooks?
 - When playbook file is complete. Run them using `ansible-playbook filename.yml`
 - import package name (pytest) Ansible uses python in the background
 - import file.yml
+
+```
+# yml file to copy the app over
+
+- hosts: web
+
+  gather_facts: yes
+
+  become: true
+
+  tasks:
+   - name: moving app folder in
+     synchronize:
+       src: /home/vagrant/app
+       dest: ~/
+```
+```
+#Yml file to create a playbook to set up nodejs
+---
+- hosts: web
+
+  gather_facts: yes
+
+  become: true
+
+  tasks:
+  - name: load a specific version of nodejs
+    shell: curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+
+  - name: install the required packages
+    apt:
+      pkg:
+        - nginx
+        - nodejs
+        - npm
+      update_cache: yes
+  - name: install and run the app
+    shell:
+       cd app/app; npm install; screen -d -m npm start
+```
