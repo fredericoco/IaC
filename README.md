@@ -113,6 +113,7 @@ What are playbooks?
 - import package name (pytest) Ansible uses python in the background
 - import file.yml
 
+This code will copy the app file from the local computer to the ansible controller instance.
 ```
 # yml file to copy the app over
 
@@ -128,6 +129,7 @@ What are playbooks?
        src: /home/vagrant/app
        dest: ~/
 ```
+This code will install nodejs, the required packages and start the app
 ```
 #Yml file to create a playbook to set up nodejs
 ---
@@ -148,7 +150,64 @@ What are playbooks?
         - nodejs
         - npm
       update_cache: yes
-  - name: install and run the app
+  - name: install and run the appy
     shell:
        cd app/app; npm install; screen -d -m npm start
+```
+The code for db and reverse proxy. It will also install the specific version of nodejs, install the required packages, create the variable for the db IP, and start the app and keep it running
+```
+#Yml file to create a playbook to set up nodejs and connect to db, reverse proxy WIP
+---
+- hosts: web
+
+  gather_facts: yes
+
+  become: true
+
+  tasks:
+  -  name: load a specific version of nodejs
+     shell: curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+
+  -  name: install the required packages
+     apt:
+       pkg:
+         - nginx
+         - nodejs
+         - npm
+       update_cache: yes
+ # -  name: nginx configuration for reverse proxy
+ #    synchronize:
+ #      src: /home/vagrant/app/app/default
+ #      dest: /etc/nginx/sites-available/default
+ # -  name: nginx restart
+ #    service: name=nginx state=restarted
+ # -  name: nginx enable
+ #    serivce: name=nginx enabled=yes
+  -  name: install and run the app
+     become_user: vagrant
+     environment:
+       DB_HOST: mongodb://192.168.33.11:27017/posts
+     shell:
+        cd app/app; node seeds/seed.js; npm install; screen -d -m npm start
+```
+The code below, is the code for installing mongo, and making sure mongodb is present and enabled. 
+```
+---
+-  hosts: db
+   gather_facts: yes
+   become: true
+   tasks:
+   - name: installing mongo
+     apt:
+       name: mongodb
+       state: present
+   - name: allow 0.0.0.0
+     ansible.builtin.lineinfile:
+       path: /etc/mongodb.conf
+       regexp: '^bind_ip = '
+       line: bind_ip = 0.0.0.0
+   - name: restart mongodb
+     service: name=mongodb state=restarted
+   - name: mongod enable
+     service: name=mongodb enabled=yes
 ```
