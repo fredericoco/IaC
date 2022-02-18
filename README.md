@@ -4,62 +4,8 @@
 ### Let's create Vagrantfile to create Three VMs for Ansible architecture
 #### Ansible controller and Ansible agents 
 
-```
+See base file from Shahrukh or vagrant file.
 
-# -*- mode: ruby -*-
- # vi: set ft=ruby :
- 
- # All Vagrant configuration is done below. The "2" in Vagrant.configure
- # configures the configuration version (we support older styles for
- # backwards compatibility). Please don't change it unless you know what
- 
- # MULTI SERVER/VMs environment 
- #
- Vagrant.configure("2") do |config|
- # creating are Ansible controller
-   config.vm.define "controller" do |controller|
-     
-    controller.vm.box = "bento/ubuntu-18.04"
-    
-    controller.vm.hostname = 'controller'
-    
-    controller.vm.network :private_network, ip: "192.168.33.12"
-    
-    # config.hostsupdater.aliases = ["development.controller"] 
-    
-   end 
- # creating first VM called web  
-   config.vm.define "web" do |web|
-     
-     web.vm.box = "bento/ubuntu-18.04"
-    # downloading ubuntu 18.04 image
- 
-     web.vm.hostname = 'web'
-     # assigning host name to the VM
-     
-     web.vm.network :private_network, ip: "192.168.33.10"
-     #   assigning private IP
-     
-     #config.hostsupdater.aliases = ["development.web"]
-     # creating a link called development.web so we can access web page with this link instread of an IP   
-         
-   end
-   
- # creating second VM called db
-   config.vm.define "db" do |db|
-     
-     db.vm.box = "bento/ubuntu-18.04"
-     
-     db.vm.hostname = 'db'
-     
-     db.vm.network :private_network, ip: "192.168.33.11"
-     
-     #config.hostsupdater.aliases = ["development.db"]     
-   end
- 
- 
- end
-```
 # Infrastructure as Code (IaC)
 Ansible and Terraform are used to work with infrastructure as code. They can be used for configuration management and orchestration. Ansible is used for push to config, it's an automation script, terraform is used for orchestration. Ansible YAML/YML file.yml/ yaml (yet another mark up language).
 In order to set up the virtual machines, create a new directory on your computer and clone from the link sent (insert link here). Once it has been cloned, go into the correct directory and `vagrant up`, this will trigger the provisions file which will set up the machines. SSH into the machines `vagrant ssh machine_name` and check whether they have internet access using the update and upgrade commands.
