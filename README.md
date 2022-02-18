@@ -5,7 +5,7 @@
 #### Ansible controller and Ansible agents 
 
 See base file from Shahrukh or vagrant file.
-
+https://github.com/fredericoco/IaC/issues/1#issue-1143353098
 # Infrastructure as Code (IaC)
 Ansible and Terraform are used to work with infrastructure as code. They can be used for configuration management and orchestration. Ansible is used for push to config, it's an automation script, terraform is used for orchestration. Ansible YAML/YML file.yml/ yaml (yet another mark up language).
 In order to set up the virtual machines, create a new directory on your computer and clone from the link sent (insert link here). Once it has been cloned, go into the correct directory and `vagrant up`, this will trigger the provisions file which will set up the machines. SSH into the machines `vagrant ssh machine_name` and check whether they have internet access using the update and upgrade commands.
