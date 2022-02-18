@@ -157,3 +157,4 @@ The code below, is the code for installing mongo, and making sure mongodb is pre
    - name: mongod enable
      service: name=mongodb enabled=yes
 ```
+![error](https://user-images.githubusercontent.com/39882040/154725514-5943db68-7623-43b5-b533-250fcccd9823.PNG)
