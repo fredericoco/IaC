@@ -226,12 +226,12 @@ The playbook I used for the creation of the instance is shown below.
       instance_tags:
         Name: FredPlayBook
 ```
-Make sure the eng103a.pem file is in the /etc/ansible directory. This can be done with the command `sudo scp file-to-move.pem vagrant@192.168.33.10:~/.ssh/`. This will move the access file to the virtual machine.In order to be able to communicate with the aws instance, you need to edit the `Host` file.you need to put in a name(aws in our case), the IP,ansible user, and the pem file used to connect with it.This can be seen in the image below.
+Make sure the eng103a.pem file is in the /etc/ansible directory. You can also put it in the right location on microsoft visual studio. This can be done with the command `sudo scp file-to-move.pem vagrant@192.168.33.10:~/.ssh/`. This will move the access file to the virtual machine.In order to be able to communicate with the aws instance, you need to edit the `Host` file.you need to put in a name(aws in our case), the IP,ansible user, and the pem file used to connect with it.This can be seen in the image below.
 ![image](https://user-images.githubusercontent.com/39882040/154998271-851d177a-56db-4e12-8d70-8f43548a48c1.png)
  
  Make sure you ping the aws instance using the command `ansible all -m ping --ask-vault-pass`. If the ping is successful then you can move onto the ssh. This can be done with the command `sudo ssh -i "file.pem" ubuntu@instance_ip`. 
 
-The code below sets up nginx on the instance.
+The code below sets up nginx on the instance. This is similar to some of the code from earlier but the `hosts` is changed to match the AWS instance.
 ```
 #Yaml file to start nginx
 ---
@@ -255,4 +255,9 @@ The code below sets up nginx on the instance.
     shell:
        cd app/app; node seeds/seed.js; npm install; screen -d -m npm start
 ```
-
+Some blockers today include:
+- access denied - use sudo - aws unreachable - check your keys in pass.yml
+- ansible-vault edit pass.yml
+- can't ssh in - ensure the location of .pem file is 100% correct
+- .pem file must be in .ssh folder of your controller
+- playbook runs but does not launch ec2 - add tags at the end of command
