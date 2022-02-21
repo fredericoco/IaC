@@ -226,7 +226,7 @@ The playbook I used for the creation of the instance is shown below.
       instance_tags:
         Name: FredPlayBook
 ```
-Make sure the eng103a.pem file is in the /etc/ansible directory. This can be done with the command.In order to be able to communicate with the aws instance, you need to edit the `Host` file.you need to put in a name(aws in our case), the IP,ansible user, and the pem file used to connect with it.This can be seen in the image below.
+Make sure the eng103a.pem file is in the /etc/ansible directory. This can be done with the command `sudo scp file-to-move.pem vagrant@192.168.33.10:~/.ssh/`. This will move the access file to the virtual machine.In order to be able to communicate with the aws instance, you need to edit the `Host` file.you need to put in a name(aws in our case), the IP,ansible user, and the pem file used to connect with it.This can be seen in the image below.
 ![image](https://user-images.githubusercontent.com/39882040/154998271-851d177a-56db-4e12-8d70-8f43548a48c1.png)
  
  Make sure you ping the aws instance using the command `ansible all -m ping --ask-vault-pass`. If the ping is successful then you can move onto the ssh. This can be done with the command `sudo ssh -i "file.pem" ubuntu@instance_ip`. 
