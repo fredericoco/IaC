@@ -100,7 +100,7 @@ This code will install nodejs, the required packages and start the app
     shell:
        cd app/app; npm install; screen -d -m npm start
 ```
-The code for db and reverse proxy. It will also install the specific version of nodejs, install the required packages, create the variable for the db IP, and start the app and keep it running
+The code for db and reverse proxy. It will also install the specific version of nodejs, install the required packages, create the variable for the db IP, and start the app and keep it running.
 ```
 #Yml file to create a playbook to set up nodejs and connect to db, reverse proxy WIP
 ---
@@ -121,14 +121,14 @@ The code for db and reverse proxy. It will also install the specific version of 
          - nodejs
          - npm
        update_cache: yes
- # -  name: nginx configuration for reverse proxy
- #    synchronize:
- #      src: /home/vagrant/app/app/default
- #      dest: /etc/nginx/sites-available/default
- # -  name: nginx restart
- #    service: name=nginx state=restarted
- # -  name: nginx enable
- #    serivce: name=nginx enabled=yes
+  -  name: nginx configuration for reverse proxy
+     synchronize:
+       src: /home/vagrant/app/app/default
+       dest: /etc/nginx/sites-available/default
+  -  name: nginx restart
+     service: name=nginx state=restarted
+  -  name: nginx enable
+     service: name=nginx enabled=yes
   -  name: install and run the app
      become_user: vagrant
      environment:
@@ -158,3 +158,99 @@ The code below, is the code for installing mongo, and making sure mongodb is pre
      service: name=mongodb enabled=yes
 ```
 ![error](https://user-images.githubusercontent.com/39882040/154725514-5943db68-7623-43b5-b533-250fcccd9823.PNG)
+
+# Hybrid IaC
+- Set up AWS access and secret keys using ansible vault
+- need to have pem file
+- Create a password for connection to AWS for ansible vault
+
+Steps:
+- Create a new VM (not the old controller)
+- set up ansible controller to use in hybrid infrastructure from on prem - public cloud
+- install required dependencies
+- python3, pip3, awscll,ansible- boto boto3 python's package
+- tree
+- In order to download and install ansible we need to get the repository first
+- Use git bash as admin
+- alias python=python3
+
+Set up ansible vault
+- aws access and secret keys
+- ansible-vault default folder structure
+- create a file.yml to store AWS keys
+- chmod 600 file.yml
+- ansible db -m ping --ask-vault-pass (will ask us to enter password)
+
+The code below should set up the pass file. I had a blocker on here so I had to do it again, so do the steps carefully.
+```
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get install tree
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt-get install ansible
+sudo apt-get install python3-pip
+pip3 install awscli
+pip3 install boto boto3
+aws --version (need to restart git bash for this to work)
+cd /etc/ansible/group_vars/all
+sudo ansible-vault create pass.yml
+cd ..
+cd ..
+sudo chmod 600 pass.yml
+cd group_vars/all
+sudo ansible all -m ping --ask-vault-pass
+```
+
+The playbook I used for the creation of the instance is shown below.
+
+```
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars_files:
+  - group_vars/all/pass.yml
+  tasks:
+  - ec2:
+      aws_access_key: "{{aws_access_key}}"
+      aws_secret_key: "{{aws_secret_key}}"
+      key_name: eng103a
+      instance_type: t2.micro
+      image: ami-07d8796a2b0f8d29c
+      wait: yes
+      group: default
+      region: "eu-west-1"
+      count: 1
+      vpc_subnet_id: subnet-0752a4cb9e3db4216
+      assign_public_ip: yes
+      instance_tags:
+        Name: FredPlayBook
+```
+Make sure the eng103a.pem file is in the /etc/ansible directory. This can be done with the command.In order to be able to communicate with the aws instance, you need to edit the `Host` file.you need to put in a name(aws in our case), the IP,ansible user, and the pem file used to connect with it.This can be seen in the image below.
+
+ 
+ Make sure you ping the aws instance using the command `ansible all -m ping --ask-vault-pass`.
+
+```
+#Yaml file to start nginx
+---
+- hosts: aws
+
+  gather_facts: yes
+
+  become: true
+
+  tasks:
+  - name: install nodejs
+    shell: url -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+  - name: Installing Nginx web-sever in our app machine
+    apt:
+      pkg:
+        - nginx
+        - nodejs
+        - npm
+      update_cache: yes
+  - name: run the app
+    shell:
+       cd app/app; node seeds/seed.js; npm install; screen -d -m npm start
+```
