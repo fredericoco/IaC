@@ -261,3 +261,102 @@ Some blockers today include:
 - can't ssh in - ensure the location of .pem file is 100% correct
 - .pem file must be in .ssh folder of your controller
 - playbook runs but does not launch ec2 - add tags at the end of command
+
+# Controller on AWS
+
+Steps to do:
+- step 1: set up a controller on an EC2 instance
+- step 2: Set up ansible vault with AWS access and secret keys. Must not copy aws keys on aws controller, encrypt keys
+- step 3: launch another instance for app from the AWS ansible controller
+- step 4: ping your app instance and SSH into your app instance from your controller
+- step 5: run your playbooks to push configurations, test nginx, reverse proxy etc. Once that is all done, launch your db instance. Do not launch the db instance until you have set up your app instance
+
+The code below stats the instace. Some thigns on here need to be changed in the future. The `id_rsa` is a key that was created for the access.
+```
+---
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars_files:
+  - group_vars/all/pass.yml
+  tasks:
+  - ec2_key:
+      name: id_rsa
+      key_material: "{{ lookup('file', '/home/ubuntu/.ssh/id_rsa.pub') }}"
+      region: "eu-west-1"
+      aws_access_key: "{{aws_access_key}}"
+      aws_secret_key: "{{aws_secret_key}}"
+  - ec2:
+      aws_access_key: "{{aws_access_key}}"
+      aws_secret_key: "{{aws_secret_key}}"
+      key_name: id_rsa
+      instance_type: t2.micro
+      image: ami-0829dd07f85c1b677
+      wait: yes
+      group: default
+      region: "eu-west-1"
+      count: 1
+      vpc_subnet_id: subnet-0752a4cb9e3db4216
+      assign_public_ip: yes
+      instance_tags:
+        Name: FredPlayBook-db
+```
+This code is the db_conf code
+```
+---
+-  hosts: aws-db
+   gather_facts: yes
+   become: true
+   tasks:
+   - name: installing mongo
+     apt:
+       name: mongodb
+       state: present
+   - name: allow 0.0.0.0
+     ansible.builtin.lineinfile:
+       path: /etc/mongodb.conf
+       regexp: '^bind_ip = '
+       line: bind_ip = 0.0.0.0
+   - name: restart mongodb
+     service: name=mongodb state=restarted
+   - name: mongod enable
+     service: name=mongodb enabled=yes
+```
+This code below does the restart for nginx
+```
+---
+- hosts: aws-app
+  gather_facts: yes
+  become: true
+  tasks:
+  - name: restart and enable nginx
+    service: name=nginx state=restarted enabled=yes
+```
+This code installs some of the useful installed app
+```
+---
+- hosts: aws-app
+
+  gather_facts: yes
+
+  become: true
+
+  tasks:
+  - name: install nodejs
+    shell: url -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+  - name: Installing Nginx web-sever in our app machine
+    apt:
+      pkg:
+        - nginx
+        - nodejs
+        - npm
+      update_cache: yes
+  -  name: nginx configuration for reverse proxy
+     copy:
+       src: /home/ubuntu/default
+       dest: /etc/nginx/sites-available/
+       force: yes
+  #- name: run the app
+ #   shell:
+#       export DB_HOST=mongodb://3.251.91.190:27017/posts; cd app/app; node seeds/seed.js; npm install; screen -d -m npm start
+```
