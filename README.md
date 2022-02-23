@@ -162,6 +162,8 @@ The code below, is the code for installing mongo, and making sure mongodb is pre
 # Hybrid IaC
 ![IaC AWS](https://user-images.githubusercontent.com/39882040/155287231-aa03b961-970d-44fc-b904-f2e9e3817ae1.PNG)
 
+The diagram above shows the setup for a hybrid ansible configuration. The controller on AWS is initially created using an ansible playbook on the prem localhost. To create it you need the playbook, key permission (generat key), and the vault password. 
+
 - Set up AWS access and secret keys using ansible vault
 - need to have pem file
 - Create a password for connection to AWS for ansible vault
