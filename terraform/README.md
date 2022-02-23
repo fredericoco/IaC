@@ -56,3 +56,8 @@ resource "aws_instance" "fred_tf_app" {
   }
 }
 ```
+## Creation of a VPC automatically 
+We needed:
+- Region - EU-west-1
+- CIDR-Block
+- Tag
