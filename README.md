@@ -271,7 +271,9 @@ Steps to do:
 - step 4: ping your app instance and SSH into your app instance from your controller
 - step 5: run your playbooks to push configurations, test nginx, reverse proxy etc. Once that is all done, launch your db instance. Do not launch the db instance until you have set up your app instance
 
-The code below stats the instace. Some thigns on here need to be changed in the future. The `id_rsa` is a key that was created for the access.
+The code below stats the instace. Some thigns on here need to be changed in the future. The `id_rsa` is a key that was created for the access. This key can be generated using `ssh-keygen -t rsa -b 4096`. 
+
+For the reverse proxy the default file was moved from the prem to the instance using the command ` scp -i "~/.ssh/eng103a.pem" default ubuntu@3.248.212.62:~`
 ```
 ---
 - hosts: localhost
