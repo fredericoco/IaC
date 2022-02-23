@@ -366,3 +366,7 @@ This code installs some of the useful installed app
  #   shell:
 #       export DB_HOST=mongodb://3.251.91.190:27017/posts; cd app/app; node seeds/seed.js; npm install; screen -d -m npm start
 ```
+# Infrastructure as Code-Terraform
+Terraform is an example of IaC, it is used for infrastructure provisioning. The language it uses is GO. It can be used to provision stuff like VPCs, subnets, etc automatically, and in tandem with ansible can set up a environment automatically.
+
+ The command  `sudo ansible-playbook start.yaml --ask-vault-pass -e ansible_python_interpreter=/usr/bin/python3 -v`, will run the  ansible play book called `start.yaml`, will have vault permission (so you'll have to enter a password), it will also use python 3 and give you information on the running of it. If there are any issues.

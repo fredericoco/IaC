@@ -61,6 +61,8 @@ We needed:
 - Region - EU-west-1
 - CIDR-Block
 - Tag
+
+There was some useful documentation on https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table. This had information on all the relevant security aspects we had to implement on the terraform document.
 ```
 # Terraform init -will download any required packages
 resource "aws_vpc" "terraform_vpc_code_test" {
