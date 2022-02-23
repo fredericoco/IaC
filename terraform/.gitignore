@@ -1,3 +1,4 @@
 terraform-provider-aws_v4.2.0x5.exe
 .terraform/
 .terraform.lock.hcl
+terraform
