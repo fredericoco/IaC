@@ -162,3 +162,5 @@ resource "aws_instance" "fred_tf_app" {
  subnet_id = aws_subnet.terraform_subnet.id
 }
 ```
+Blockers today:
+- By mistake I deleted my controller instance and I didn't have an AMI. So I had to remake it and complete the terraform script.
