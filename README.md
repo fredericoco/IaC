@@ -160,6 +160,8 @@ The code below, is the code for installing mongo, and making sure mongodb is pre
 ![error](https://user-images.githubusercontent.com/39882040/154725514-5943db68-7623-43b5-b533-250fcccd9823.PNG)
 
 # Hybrid IaC
+![IaC AWS](https://user-images.githubusercontent.com/39882040/155287231-aa03b961-970d-44fc-b904-f2e9e3817ae1.PNG)
+
 - Set up AWS access and secret keys using ansible vault
 - need to have pem file
 - Create a password for connection to AWS for ansible vault
