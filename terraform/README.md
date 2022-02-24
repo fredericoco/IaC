@@ -56,7 +56,7 @@ resource "aws_instance" "fred_tf_app" {
   }
 }
 ```
-## Creation of a VPC automatically 
+## Creation of a VPC and other security aspects automatically 
 We needed:
 - Region - EU-west-1
 - CIDR-Block
@@ -164,3 +164,5 @@ resource "aws_instance" "fred_tf_app" {
 ```
 Blockers today:
 - By mistake I deleted my controller instance and I didn't have an AMI. So I had to remake it and complete the terraform script.
+- Issue with terraform, regarding the protocol, I used the security groups that I had on AWS, which caused an issue because the it did not recognise the protocol.
+- Some small issues with the curly brackets.
