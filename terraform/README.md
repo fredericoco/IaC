@@ -12,6 +12,7 @@
 - `terraform plan` checks the script
 - `terraform apply` implement the script
 - `terraform destroy` to delete everything
+- The command `refreshenv` is useful because it refreshes the environment
 
 Terraform file/folder structure
 - `.tf` extension is used by terraform - `main.tf` is the runner file
@@ -166,3 +167,17 @@ Blockers today:
 - By mistake I deleted my controller instance and I didn't have an AMI. So I had to remake it and complete the terraform script.
 - Issue with terraform, regarding the protocol, I used the security groups that I had on AWS, which caused an issue because the it did not recognise the protocol.
 - Some small issues with the curly brackets.
+
+## Jenkins and Ansible
+
+```
+sudo apt remove --purge python3 (edited)
+sudo apt remove --purge python3-pip
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.9 -y
+update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+python --version
+```
+
+I messed up the key so I couldn't ssh into the instance. Annoyingly I was making progress at this point.
