@@ -135,6 +135,7 @@ cp /home/ubuntu/default /etc/nginx/sites-available/
 systemctl restart nginx
 systemctl enable nginx
 cd /home/ubuntu
+node seed/seeds.js
 npm install
 screen -d -m npm start
 EOF
