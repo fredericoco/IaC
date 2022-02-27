@@ -15,6 +15,25 @@ resource "aws_subnet" "terraform_subnet" {
   tags = {
     Name = "eng103a_fred_subnet"
   }
+  availability_zone = "eu-west-1b"
+}
+resource "aws_subnet" "terraform_subnet2" {
+  vpc_id = aws_vpc.terraform_vpc_code_test.id
+  cidr_block = "10.0.2.0/24"
+
+  tags = {
+    Name = "eng103a_fred_subnet2"
+  }
+  availability_zone = "eu-west-1a"
+}
+resource "aws_subnet" "terraform_subnet3" {
+  vpc_id = aws_vpc.terraform_vpc_code_test.id
+  cidr_block = "10.0.3.0/24"
+
+  tags = {
+    Name = "eng103a_fred_subnet3"
+  }
+  availability_zone = "eu-west-1c"
 }
 # provider aws
 provider "aws" {
@@ -123,11 +142,11 @@ EOF
  
  resource "aws_autoscaling_group" "asg" {
   name                      = "fred_terraform_asg"
-  min_size                  = 2
-  max_size                  = 4
+  min_size                  = 3
+  max_size                  = 6
   health_check_grace_period = 300
   health_check_type         = "ELB"
-  desired_capacity          = 2
+  desired_capacity          = 3
   launch_configuration      = aws_launch_configuration.launchconf.name
   vpc_zone_identifier       = [aws_subnet.terraform_subnet.id]
   force_delete = true
@@ -195,4 +214,37 @@ resource "aws_cloudwatch_metric_alarm" "cloudwatchalarm2" {
 
   alarm_description = "This metric monitors ec2 cpu utilization"
   alarm_actions     = [aws_autoscaling_policy.asgpolicydown.arn]
+}
+
+resource "aws_alb" "loadbalancer" {
+  name               = "fred-load-balancer"
+  security_groups    = [aws_security_group.fred_security_group.id]
+  subnets            = [aws_subnet.terraform_subnet.id, aws_subnet.terraform_subnet2.id, aws_subnet.terraform_subnet3.id]
+  tags = {
+    Name = "fred-load-balancer"
+  }
+}
+
+# attach the application load balancer to the autoscaling group
+resource "aws_autoscaling_attachment" "asg_attachment" {
+  autoscaling_group_name = aws_autoscaling_group.asg.id
+  lb_target_group_arn = aws_alb_target_group.targetgroup.arn
+}
+
+resource "aws_alb_target_group" "targetgroup" {
+  name     = "fred-alb-target"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.terraform_vpc_code_test.id
+}
+# set up an application load balancer listener to hear requests at port 80
+resource "aws_alb_listener" "listener_http" {
+  load_balancer_arn = aws_alb.loadbalancer.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = aws_alb_target_group.targetgroup.arn
+    type             = "forward"
+  }
 }
