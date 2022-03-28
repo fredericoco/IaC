@@ -196,12 +196,13 @@ The cloudwatch alarm needs to be set up for both situations.
 
 The linux stress command was installed and used to test the autoscaling process.
 
+
 ```
 sudo apt-get install stress
 sudo stress --cpu  8 --timeout 20000
 ```
 
-The only blocker on this task was related to destroying the autoscaler and other infrastructure created by terraform. This is due to AWS not allowing you to terminate some of the security groups and VPCs without getting rid of everything else.
+The only blocker on this task was related to destroying the autoscaler and other infrastructure created by terraform. This is due to AWS not allowing you to terminate some of the security groups and VPCs without getting rid of everything else. The order is Autoscaling group -> instances -> VPC -> `terraform destroy`
 
 ```
 # Terraform init -will download any required packages

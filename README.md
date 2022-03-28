@@ -370,3 +370,13 @@ This code installs some of the useful installed app
 Terraform is an example of IaC, it is used for infrastructure provisioning. The language it uses is GO. It can be used to provision stuff like VPCs, subnets, etc automatically, and in tandem with ansible can set up a environment automatically.
 
  The command  `sudo ansible-playbook start.yaml --ask-vault-pass -e ansible_python_interpreter=/usr/bin/python3 -v`, will run the  ansible play book called `start.yaml`, will have vault permission (so you'll have to enter a password), it will also use python 3 and give you information on the running of it. If there are any issues.
+
+ ```
+ [aws]
+PUBLIC IP ansible_connection=ssh ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/vagrant/.ssh/PRIVATEKEY
+ ```
+
+ The command used to move the app folder from the desktop to the instance was:
+ `scp -i "~/.ssh/name_of_pemfile.pem" -r app ubuntu@public_IP.eu-west-1.compute.amazonaws.com:~/`
+
+ In the part between quotation marks, you would normally give the file directory for the pem file, -r means it takes all of it, this was done from desktop so no directory is needed for app but normally you would have to give a directory, and the last part is the identity of the ec2 instance, see public IPv4 and ubuntu in our case

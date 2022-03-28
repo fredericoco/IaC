@@ -134,8 +134,8 @@ sudo apt-get install nodejs -y
 cp /home/ubuntu/default /etc/nginx/sites-available/
 systemctl restart nginx
 systemctl enable nginx
-cd /home/ubuntu
-node seed/seeds.js
+cd home/ubuntu
+node seeds/seed.js
 npm install
 screen -d -m npm start
 EOF
@@ -143,13 +143,13 @@ EOF
  
  resource "aws_autoscaling_group" "asg" {
   name                      = "fred_terraform_asg"
-  min_size                  = 3
+  min_size                  = 1
   max_size                  = 6
-  health_check_grace_period = 300
+  health_check_grace_period = 100
   health_check_type         = "ELB"
-  desired_capacity          = 3
+  desired_capacity          = 1
   launch_configuration      = aws_launch_configuration.launchconf.name
-  vpc_zone_identifier       = [aws_subnet.terraform_subnet.id]
+  vpc_zone_identifier       = [aws_subnet.terraform_subnet.id,aws_subnet.terraform_subnet2.id , aws_subnet.terraform_subnet3.id ]
   force_delete = true
   tag {
     key                 = "Name"
@@ -184,7 +184,7 @@ resource "aws_autoscaling_policy" "asgpolicydown" {
 resource "aws_cloudwatch_metric_alarm" "cloudwatchalarm" {
   alarm_name          = "greaterthan80alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "2"
+  evaluation_periods  = "1"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/EC2"
   period              = "30"
